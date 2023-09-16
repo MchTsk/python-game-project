@@ -150,7 +150,7 @@ def move_enemy():
                 # アイテムが存在する：アイテムへ移動
                 if sgs.search_target(C.ITEM) == True:
                     item_x, item_y = sgs.get_target_coordinate(C.ITEM)                    # アイテムのx,y座標を取得
-                    bfs.BFS(C.emy_x[n], C.emy_y[n], item_x, item_y)                         # 幅優先探索法でコインの位置までの最短ルートを算出
+                    bfs.BFS(C.emy_x[n], C.emy_y[n], item_x, item_y)                         # 幅優先探索法でアイテムの位置までの最短ルートを算出
                     next_dir = bfs.next_direction(C.emy_x[n], C.emy_y[n], item_x, item_y)   # 幅優先探索法で求めたルートから次の移動方向を取得
                 # アイテムが存在しない：プレイヤーを追尾
                 else:

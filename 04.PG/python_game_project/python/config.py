@@ -39,18 +39,18 @@ COLOR_GREEN = 3     # 緑色
 COLOR_YELLOW = 4    # 黄色
 COLOR_BROWN = 5     # 茶色
 # # =============== GAME MANAGE ===============
-idx = 0         # ゲーム進行のインデックス
-tmr = 0         # ゲームのタイマー
-tmr_all = 0     # ゲームの総プレイ時間
-tmr_pause = 0   # ポーズ画面(idx=2)のタイマー
-course = 0      # コースの回数
-point = 0       # 総獲得コイン数
-EDGE = 1        # フィールド端の壁
-WALL = 0        # フィールド端以外の壁
-ROAD = -1       # 通路
-GOAL = -2       # ゴール
-ITEM = -3       # アイテム
-COIN = -4       # コイン
+idx = 0                     # ゲーム進行のインデックス
+tmr = 0                     # ゲームのタイマー
+tmr_all = 0                 # ゲームの総プレイ時間
+tmr_pause = 0               # ポーズ画面(idx=2)のタイマー
+course = 0                  # コースの回数
+point = 0                   # 総獲得コイン数
+EDGE = 1                    # フィールド端の壁
+WALL = 0                    # フィールド端以外の壁
+ROAD = -1                   # 通路
+GOAL = -2                   # ゴール
+ITEM = -3                   # アイテム
+COIN = -4                   # コイン
 # # =============== TITLE IMG ===============
 plt_col = []     # ゲームタイトル画面のプレイヤー画像のカラーインデックス
 # # =============== PLAYER ===============
@@ -67,7 +67,7 @@ pl_muteki = 0         # 無敵時間（秒）
 pl_wallbreak = 0      # 壁破壊カウント
 pll_inc_coin_1 = 50   # ライフを増やすためのコイン枚数（コース１～５）
 pll_inc_coin_2 = 60   # ライフを増やすためのコイン枚数（コース６～１０）
-pll_inc_coin_3 = 80  # ライフを増やすためのコイン枚数（コース１０～１５）
+pll_inc_coin_3 = 80   # ライフを増やすためのコイン枚数（コース１０～１５）
 pll_inc_coin_4 = 100  # ライフを増やすためのコイン枚数（コース１６～２０）
 plm_tmr = 0
 # # =============== ENEMY ===============
@@ -163,7 +163,14 @@ img_enemy = [
 ]
 img_goal = pygame.image.load("image/goal.png")
 img_coin = pygame.image.load("image/coin.png")
-img_item = pygame.image.load("image/item.png")
+# img_item = pygame.image.load("image/item.png")
+img_item = [
+    pygame.image.load("image/item_0.png"),
+    pygame.image.load("image/item_1.png"),
+    pygame.image.load("image/item_2.png"),
+    pygame.image.load("image/item_3.png"),
+    pygame.image.load("image/item_4.png")
+]
 img_arrow = pygame.image.load("image/arrow.png")
 img_unknown = pygame.image.load("image/unknown.png")
 img_manual = pygame.image.load("image/manual.png")

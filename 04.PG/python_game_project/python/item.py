@@ -8,6 +8,7 @@ from collections import deque
 from tkinter import messagebox
 import logging
 
+from . import sgs
 from . import config as C
 
 
@@ -79,13 +80,26 @@ def chk_and_gen_item():
     count_item = 0
     for y in range(C.maze_num):
         for x in range(C.maze_num):
-            if C.maze[y][x] == C.ITEM:
+            if math.ceil(C.maze[y][x]) == C.ITEM:
                 count_item += 1
-                
+    
+    print(C.item_generate_time)
+
     # アイテムが最大数までない + アイテムの再生成時間がある
-    if count_item < C.item_max and C.item_generate_time:
+    if count_item < C.item_max and C.item_generate_time > 0:
         C.item_generate_time -= 1
     # アイテムが最大数までない + アイテムの再生成時間が0 -> アイテムの生成
     elif count_item < C.item_max and C.item_generate_time == 0:
         sgs.set_target(C.ITEM)
-        C.item_generate_time = C.FPS * 15
+        C.item_generate_time = C.FPS * 20
+
+
+# ******************** アイテムの種類番号を取得 ********************
+def get_item_num(maze_num):
+
+    # [小数点以下の数字-1]を抽出
+    str_maze_num = str(maze_num)
+    idx_item = str_maze_num.find('.')
+    idx_itm_list = int(str_maze_num[idx_item+1:]) - 1
+
+    return idx_itm_list

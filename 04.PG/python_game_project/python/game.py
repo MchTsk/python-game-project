@@ -9,7 +9,7 @@ from tkinter import messagebox
 import logging
 
 from . import enemy
-from . import item
+from . import item as I
 from . import sgs
 from . import config as C
 
@@ -31,7 +31,7 @@ def init_game():
     C.pl_wallbreak = 0
 
     # アイテムの効果を無効
-    item.item_effect_off()
+    I.item_effect_off()
     
 
 # ******************** ゲームの初期配置／設定 ********************
@@ -45,7 +45,7 @@ def init_game_place():
 
     # アイテム
     C.item_max = C.maze_num // 5        # アイテムの最大数
-    C.item_generate_time = C.FPS * 60   # アイテムを再生成するまでの時間
+    C.item_generate_time = C.FPS * 20   # アイテムを再生成するまでの時間
 
     # プレイヤーの配置
     while True:
@@ -115,13 +115,14 @@ def hit_check():
     # if C.maze[C.pl_y][C.pl_x] == C.GOAL:
     #     C.maze[C.pl_y][C.pl_x] = C.ROAD
 
-    # プレイヤー：アイテムを拾う
-    if C.maze[C.pl_y][C.pl_x] == C.ITEM:
+    # プレイヤー：アイテムを拾う（負の数のため、math.ceilで小数点以下を切り上げ）
+    if math.ceil(C.maze[C.pl_y][C.pl_x]) == C.ITEM:
         C.snd_get_item.play()
+        # item = random.randint(1, 5)
+        # C.pl_item[item] += 1
+        # 取得するアイテムの種類を小数点以下の数字から設定
+        C.pl_item[I.get_item_num(C.maze[C.pl_y][C.pl_x]) + 1] += 1
         C.maze[C.pl_y][C.pl_x] = C.ROAD
-        # 取得するアイテムの種類をランダムに選定
-        item = random.randint(1, 5)
-        C.pl_item[item] += 1
 
     # エネミー
     for n in range(C.emy_max):
@@ -161,6 +162,6 @@ def hit_check():
         if C.emy_col[n] == C.COLOR_GREEN  and C.maze[C.emy_y[n]][C.emy_x[n]] == C.COIN:
             C.maze[C.emy_y[n]][C.emy_x[n]] = C.ROAD     # コインをなくす
 
-        # エネミー：茶 -> アイテムへ到達
-        if C.emy_col[n] == C.COLOR_BROWN and C.maze[C.emy_y[n]][C.emy_x[n]] == C.ITEM:
+        # エネミー：茶 -> アイテムへ到達（負の数のため、math.ceilで小数点以下を切り上げ）
+        if C.emy_col[n] == C.COLOR_BROWN and math.ceil(C.maze[C.emy_y[n]][C.emy_x[n]]) == C.ITEM:
             C.maze[C.emy_y[n]][C.emy_x[n]] = C.ROAD     # アイテムをなくす

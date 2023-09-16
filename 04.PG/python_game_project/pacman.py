@@ -1,13 +1,10 @@
 # ******************** ↓タスク↓ ********************
-# ・全体スタン時、敵にエフェクト
 # ・コースクリア時、アイテムを一つ追加
 # ・解説画面（ESCAPE）の作成
+# ・アイテムの上限を設定
 
-# ・ソース分割(済)
 # ・タイトル、使用画像、サウンドを変更
 # ・設計書に落とし込む
-# ・テスト仕様書作成
-# ・テスト実施
 # ******************** ↑タスク↑ ********************
 
 import pygame
@@ -41,7 +38,6 @@ img_pl_title = C.img_pl_title
 img_enemy = C.img_enemy
 img_goal = C.img_goal
 img_coin = C.img_coin
-img_item = C.img_item
 img_arrow = C.img_arrow
 img_unknown = C.img_unknown
 img_manual = C.img_manual
@@ -83,6 +79,7 @@ def main():
     C.snd_get_item = pygame.mixer.Sound("sound/get_item.mp3")
 
     while True:
+
         if C.idx != 2:
             C.tmr = C.tmr + 1
         if C.idx == 1:

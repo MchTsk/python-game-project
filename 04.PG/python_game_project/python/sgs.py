@@ -20,8 +20,12 @@ def search_target(target):
     # 指定のターゲットを探す
     for y in range(C.maze_num):
         for x in range(C.maze_num):
-            if C.maze[y][x] == target:
-                result = True
+            if target == C.ITEM:
+                if math.ceil(C.maze[y][x]) == target:
+                    result = True
+            else:
+               if C.maze[y][x] == target:
+                    result = True 
 
     return result
 
@@ -32,13 +36,18 @@ def get_target_coordinate(target):
     # 指定のターゲットのx,y座標
     target_x = 0
     target_y = 0
-    
+
     # 指定のターゲットの座標を探す
     for y in range(C.maze_num):
         for x in range(C.maze_num):
-            if C.maze[y][x] == target:
-                target_x = x
-                target_y = y
+            if target == C.ITEM:
+                if math.ceil(C.maze[y][x]) == target:
+                    target_x = x
+                    target_y = y
+            else:
+                if C.maze[y][x] == target:
+                    target_x = x
+                    target_y = y
 
     return target_x, target_y
 
@@ -51,6 +60,12 @@ def set_target(target):
     y = 0
     # プレイヤーから離す距離
     dis = C.maze_num // 4
+
+    if target == C.ITEM:
+        # アイテムの種類をランダムで決定
+        rr_item = random.randrange(len(C.img_item))
+        # アイテム定義(負の数)-アイテム種類(小数1桁)（例：-3.1、-3.2...）
+        target = C.ITEM - ((rr_item + 1) / 10)
     
     while True:
         # x,y座標 -> ランダム選択

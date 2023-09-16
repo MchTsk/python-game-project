@@ -8,6 +8,7 @@ from collections import deque
 from tkinter import messagebox
 import logging
 
+from . import item as I
 from . import config as C
 
 
@@ -64,9 +65,10 @@ def draw_maze(sc):
                 # 描画：コイン
                 if C.maze[my][mx] == C.COIN:
                     sc.blit(C.img_coin, [X, Y])
-                # 描画：アイテム
-                if C.maze[my][mx] == C.ITEM:
-                    sc.blit(C.img_item, [X, Y])
+                # 描画：アイテム（負の数のため、math.ceilで小数点以下を切り上げ）
+                if math.ceil(C.maze[my][mx]) == C.ITEM:
+                    # C.img_itemのリストから描画画像を設定
+                    sc.blit(C.img_item[I.get_item_num(C.maze[my][mx])], [X, Y])
                 # 描画：エネミー
                 for n in range(C.emy_max):
                     if C.emy_f[n] == False:
