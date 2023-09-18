@@ -28,7 +28,11 @@
 ・Bite!
 ・Bite it
 ・BiteMan
-・one bite（仮）
+・one bite
+・street biter(決定)
+・bite/eat to survive
+・bite and escape
+・heart biter
 
 ■分担
 ・要件定義（永田）
