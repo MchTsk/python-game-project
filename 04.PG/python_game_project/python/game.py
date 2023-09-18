@@ -31,7 +31,7 @@ def init_game():
     C.pl_wallbreak = 0
 
     # アイテムの効果を無効
-    I.item_effect_off()
+    I.item_disable()
     
 
 # ******************** ゲームの初期配置／設定 ********************
@@ -46,6 +46,11 @@ def init_game_place():
     # アイテム
     C.item_max = C.maze_num // 5        # アイテムの最大数
     C.item_generate_time = C.FPS * 20   # アイテムを再生成するまでの時間
+    if C.course > 1:
+        # アイテムの種類をランダムで決定
+        rr_item = random.randrange(len(C.img_item))
+        # アイテムを１追加
+        C.pl_item[rr_item+1] += 1
 
     # プレイヤーの配置
     while True:
@@ -94,34 +99,21 @@ def hit_check():
         C.maze[C.pl_y][C.pl_x] = C.ROAD
         C.pl_coin += 1
         C.point += 1
-        # コインを[pll_inc_coin]枚集める -> ライフが1増える
-        if C.course <= 5:
-            if C.pl_coin >= C.pll_inc_coin_1:
-                C.pl_life += 1
-                C.pl_coin -= C.pll_inc_coin_1
-        elif 6 <= C.course <= 10:
-            if C.pl_coin >= C.pll_inc_coin_2:
-                C.pl_life += 1
-                C.pl_coin -= C.pll_inc_coin_2
-        elif 11 <= C.course <= 15:
-            if C.pl_coin >= C.pll_inc_coin_3:
-                C.pl_life += 1
-                C.pl_coin -= C.pll_inc_coin_3
-        elif C.course >= 16:
-            if C.pl_coin >= C.pll_inc_coin_4:
-                C.pl_life += 1
-                C.pl_coin -= C.pll_inc_coin_4
-        
-    # if C.maze[C.pl_y][C.pl_x] == C.GOAL:
-    #     C.maze[C.pl_y][C.pl_x] = C.ROAD
+        # ライフ増加判定
+        inc_pl_life()
+
+        # 緑プレイヤーの場合 -> ポイントを更に加算する
+        if C.pl_col == C.COLOR_GREEN:
+            C.pl_coin += 1
+            C.point += 1
+            # ライフ増加判定
+            inc_pl_life()
 
     # プレイヤー：アイテムを拾う（負の数のため、math.ceilで小数点以下を切り上げ）
     if math.ceil(C.maze[C.pl_y][C.pl_x]) == C.ITEM:
         C.snd_get_item.play()
-        # item = random.randint(1, 5)
-        # C.pl_item[item] += 1
         # 取得するアイテムの種類を小数点以下の数字から設定
-        C.pl_item[I.get_item_num(C.maze[C.pl_y][C.pl_x]) + 1] += 1
+        C.pl_item[I.get_item_num(C.maze[C.pl_y][C.pl_x])] += 1
         C.maze[C.pl_y][C.pl_x] = C.ROAD
 
     # エネミー
@@ -132,7 +124,7 @@ def hit_check():
         
         # エネミー：プレイヤーと衝突
         if C.emy_x[n] == C.pl_x and C.emy_y[n] == C.pl_y:
-            # プレイヤー：赤色のパックマンの時 -> エネミーを倒す
+            # プレイヤー：青色のパックマンの時 -> エネミーを倒す
             if C.pl_col == C.COLOR_BLUE:
                 C.snd_player_attack.play()
                 C.emy_f[n] = False
@@ -150,6 +142,7 @@ def hit_check():
                     C.pl_life -= 1
                     C.emy_f[n] = False
                 else:
+                    C.snd_player_attack.play()
                     C.emy_f[n] = False
 
         # エネミー：黄 -> ゴールへ到達
@@ -165,3 +158,24 @@ def hit_check():
         # エネミー：茶 -> アイテムへ到達（負の数のため、math.ceilで小数点以下を切り上げ）
         if C.emy_col[n] == C.COLOR_BROWN and math.ceil(C.maze[C.emy_y[n]][C.emy_x[n]]) == C.ITEM:
             C.maze[C.emy_y[n]][C.emy_x[n]] = C.ROAD     # アイテムをなくす
+
+
+# ******************** ライフ増加判定 -> ライフを増やす********************
+def inc_pl_life():
+    # コインを[pll_inc_coin]枚集める -> ライフが1増える
+    if C.course <= 5:
+        if C.pl_coin >= C.pll_inc_coin_1:
+            C.pl_life += 1
+            C.pl_coin -= C.pll_inc_coin_1
+    elif 6 <= C.course <= 10:
+        if C.pl_coin >= C.pll_inc_coin_2:
+            C.pl_life += 1
+            C.pl_coin -= C.pll_inc_coin_2
+    elif 11 <= C.course <= 15:
+        if C.pl_coin >= C.pll_inc_coin_3:
+            C.pl_life += 1
+            C.pl_coin -= C.pll_inc_coin_3
+    elif C.course >= 16:
+        if C.pl_coin >= C.pll_inc_coin_4:
+            C.pl_life += 1
+            C.pl_coin -= C.pll_inc_coin_4

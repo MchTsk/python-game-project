@@ -37,17 +37,14 @@ def draw_img(sc, img, x, y):
     sc.blit(img, [x, y])
 
 
-# ******************** 迷路の描画 ********************
+# ******************** フィールドの描画 ********************
 def draw_maze(sc):
     
     # プレイヤーを中心に、画面の端から端までの情報を取得し、画面描画する
-    sc_min = 10
-    sc_max = 11
-    sc_y = 6
-    for y in range(-sc_min, sc_max):
-        for x in range(-sc_min, sc_max):
-            X = (x+sc_min) * C.maze_size
-            Y = (y+sc_y) * C.maze_size
+    for y in range(C.sc_min, C.sc_max):
+        for x in range(C.sc_min, C.sc_max):
+            X = (x + C.sc_x) * C.maze_size
+            Y = (y + C.sc_y) * C.maze_size
             # プレイヤーが軸
             mx = C.pl_x + x
             my = C.pl_y + y
@@ -68,7 +65,7 @@ def draw_maze(sc):
                 # 描画：アイテム（負の数のため、math.ceilで小数点以下を切り上げ）
                 if math.ceil(C.maze[my][mx]) == C.ITEM:
                     # C.img_itemのリストから描画画像を設定
-                    sc.blit(C.img_item[I.get_item_num(C.maze[my][mx])], [X, Y])
+                    sc.blit(C.img_item[I.get_item_num(C.maze[my][mx]) - 1], [X, Y])
                 # 描画：エネミー
                 for n in range(C.emy_max):
                     if C.emy_f[n] == False:
@@ -84,7 +81,6 @@ def draw_maze(sc):
             # 描画：プレイヤー
             if x == 0 and y == 0:
                 if C.pl_muteki%2 == 0:
-                    # C.img_rz = pygame.transform.rotozoom(C.img_player[C.pl_col*2+tmr%2], C.pl_d*(-90), 1.0)
                     img_rz = pygame.transform.rotozoom(C.img_player[C.pl_col*2+C.plm_tmr%2], C.pl_d*(-90), 1.0)
                     # アイテム使用中 + 使用時間切れ間近
                     if C.item_use == True and C.item_time < C.FPS*3:
@@ -93,27 +89,16 @@ def draw_maze(sc):
                     else:
                         sc.blit(img_rz, [X, Y])
 
-                # 緑色のパックマンの効果：矢印
-                if C.pl_col == C.COLOR_GREEN and C.goal_f == True:
-                    # プレイヤーからゴールの方向(角度)を取得
-                    a = calc_angle_of_goal_from_player()
-                    # ゴールの方向に矢印を向ける
-                    img_rz = pygame.transform.rotozoom(C.img_arrow, -a, 1.0)
-                    draw_img(sc, img_rz, X+C.maze_size/2, Y-C.maze_size)
-
     # 描画：視界エリア
     if 21 <= C.course <= 25:
-        if C.pl_scope == 0:
-            draw_img(sc, C.img_scope[C.pl_scope+1], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
+        if C.pl_fov == 0:
+            draw_img(sc, C.img_scope[C.pl_fov+1], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
     elif C.course >= 26:
-        draw_img(sc, C.img_scope[C.pl_scope], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
+        draw_img(sc, C.img_scope[C.pl_fov], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
 
     # 枠組み
-    # pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE+30, 30, 240, 340])
     pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE-725, 40, 180, 240])
-    # pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE+30, 400, 240, 290])
     pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE-725, 300, 180, 220])
-    # pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE+30, 720, 240, 150])
     pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE-725, 570, 180, 160])
 
 
@@ -129,23 +114,18 @@ def draw_maze(sc):
     for i in range(6):
         # 画像の描画
         img_rz = pygame.transform.rotozoom(C.img_enemy[i*4], 0, 0.6)
-        # sc.blit(img_rz, [C.SCREEN_SIZE+70, 50+50*i])
         sc.blit(img_rz, [C.SCREEN_SIZE-685, 50+37*i])
         # 文字の描画
-        # draw_text(sc, "X   " + str(count_enemy_color[i]), C.SCREEN_SIZE+150, 60+50*i, 35, C.BLACK, False)
         draw_text(sc, "X   " + str(count_enemy_color[i]), C.SCREEN_SIZE-635, 60+37*i, 30, C.BLACK, False)
 
     # パックマン(効果)の情報
     for i in range(1, 6):
-        if C.course >= i*5:
+        if C.course > i*5:
             # 画像の描画
             img_rz = pygame.transform.rotozoom(C.img_player[i*2], -270, 0.7)
-            # sc.blit(img_rz, [C.SCREEN_SIZE+110, 370+50*i])
-            sc.blit(img_rz, [C.SCREEN_SIZE-665, 263+42*i])
+            sc.blit(img_rz, [C.SCREEN_SIZE-663, 263+42*i])
             # 文字の描画
-            # draw_text(sc, "[" + str(i) + "]:", C.SCREEN_SIZE+50, 380+50*i, 35, C.BLACK, False)
             draw_text(sc, "[" + str(i) + "]:", C.SCREEN_SIZE-705, 275+42*i, 30, C.BLACK, False)
-            # draw_text(sc, "X   " + str(C.pl_item[i]), C.SCREEN_SIZE+180, 380+50*i, 35, C.BLACK, False)
             draw_text(sc, "X  " + str(C.pl_item[i]), C.SCREEN_SIZE-605, 275+42*i, 30, C.BLACK, False)
         else:
             # 画像の描画
@@ -186,38 +166,13 @@ def draw_maze(sc):
     else:
         wk_color = C.BLACK
 
-    # プレイヤーの情報
-    draw_text(sc, "LEVEL :  " + str(C.course), C.SCREEN_SIZE-715, 590, 30, C.BLACK, False)
+    # ゲームの情報
+    draw_text(sc, "LEVEL :  " + str(C.course) + " / " + str(C.course_max), C.SCREEN_SIZE-715, 590, 30, C.BLACK, False)
     draw_text(sc, "TIME   :  ", C.SCREEN_SIZE-715, 625, 30, C.BLACK, False)
     draw_text(sc, str(time_limit - tmr_now)[2:], C.SCREEN_SIZE-630, 625, 30, wk_color, False)
-    # draw_text(sc, "LIMIT  :  " + str(time_limit)[2:], C.SCREEN_SIZE-715, 625, 30, C.BLACK, False)
     draw_text(sc, "LIFE    :  " + str(C.pl_life), C.SCREEN_SIZE-715, 660, 30, C.BLACK, False)
-    draw_text(sc, "COIN   :  " + str(C.pl_coin) + " / " + str_pll_inc_coin, C.SCREEN_SIZE-715, 695, 30, C.BLACK, False)
-    # draw_text(sc, "POINT      :   " + str(point), C.SCREEN_SIZE+40, 850, 35, C.BLACK, False)
+    draw_text(sc, "POINT :  " + str(C.pl_coin) + " / " + str_pll_inc_coin, C.SCREEN_SIZE-715, 695, 30, C.BLACK, False)
 
     if C.tmr % C.FPS <= 10:
         draw_text(sc, "[ESCAPE] TO MANUAL", (C.SCREEN_SIZE+500)/15, C.SCREEN_SIZE/35, 20, C.BLACK, True)
 
-
-# ******************** プレイヤーとゴールの位置の角度を算出(緑パックマンの効果で使用) ********************
-def calc_angle_of_goal_from_player():
-    # 計算：プレイヤーのx,y座標
-    x_pl = C.pl_x * C.maze_size + C.maze_size/2
-    y_pl = C.pl_y * C.maze_size + C.maze_size/2
-
-    # 計算：ゴールのx,y座標
-    x_goal = 0
-    y_goal = 0
-    for y in range(C.maze_num):
-        for x in range(C.maze_num):
-            if C.maze[y][x] == C.GOAL:
-                x_goal = x * C.maze_size + C.maze_size/2
-                y_goal = y * C.maze_size + C.maze_size/2
-                
-    # 計算：プレイヤーとゴールのx,y方向の距離
-    x_dis = x_goal - x_pl
-    y_dis = y_goal - y_pl
-    # 角度を計算
-    ang = math.degrees(math.atan2(y_dis, x_dis))
-
-    return ang

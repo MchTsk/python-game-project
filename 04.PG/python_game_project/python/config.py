@@ -44,6 +44,7 @@ tmr = 0                     # ゲームのタイマー
 tmr_all = 0                 # ゲームの総プレイ時間
 tmr_pause = 0               # ポーズ画面(idx=2)のタイマー
 course = 0                  # コースの回数
+course_max = 30                 # コースの最大値
 point = 0                   # 総獲得コイン数
 EDGE = 1                    # フィールド端の壁
 WALL = 0                    # フィールド端以外の壁
@@ -53,16 +54,20 @@ ITEM = -3                   # アイテム
 COIN = -4                   # コイン
 # # =============== TITLE IMG ===============
 plt_col = []     # ゲームタイトル画面のプレイヤー画像のカラーインデックス
+# # =============== SCREEN ===============
+sc_min = -10
+sc_max = 11
+sc_x = 10
+sc_y = 6
 # # =============== PLAYER ===============
 pl_col = 0            # パックマンの色(使用するアイテムで変化)
 pl_x = 0              # x座標
 pl_y = 0              # y座標
 pl_d = 0              # 移動方向
-pl_fast = False       # 移動スピードが早い
 pl_coin = 0           # 拾ったコインの数
 pl_life = 0           # 残機(100コインごとに1増える)
 pl_item = [0]*6       # 各アイテムの所有数
-pl_scope = 0          # 視界の広さ
+pl_fov = 0            # 視界制限
 pl_muteki = 0         # 無敵時間（秒）
 pl_wallbreak = 0      # 壁破壊カウント
 pll_inc_coin_1 = 50   # ライフを増やすためのコイン枚数（コース１～５）
@@ -163,7 +168,6 @@ img_enemy = [
 ]
 img_goal = pygame.image.load("image/goal.png")
 img_coin = pygame.image.load("image/coin.png")
-# img_item = pygame.image.load("image/item.png")
 img_item = [
     pygame.image.load("image/item_0.png"),
     pygame.image.load("image/item_1.png"),
@@ -171,6 +175,6 @@ img_item = [
     pygame.image.load("image/item_3.png"),
     pygame.image.load("image/item_4.png")
 ]
-img_arrow = pygame.image.load("image/arrow.png")
+img_vector = pygame.image.load("image/vector.png")
 img_unknown = pygame.image.load("image/unknown.png")
 img_manual = pygame.image.load("image/manual.png")

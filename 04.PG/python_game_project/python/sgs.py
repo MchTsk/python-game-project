@@ -63,7 +63,7 @@ def set_target(target):
 
     if target == C.ITEM:
         # アイテムの種類をランダムで決定
-        rr_item = random.randrange(len(C.img_item))
+        rr_item = random.randrange(len(C.pl_item) - 1)
         # アイテム定義(負の数)-アイテム種類(小数1桁)（例：-3.1、-3.2...）
         target = C.ITEM - ((rr_item + 1) / 10)
     

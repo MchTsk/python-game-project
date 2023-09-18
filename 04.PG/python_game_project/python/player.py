@@ -33,7 +33,7 @@ def move_player(key):
                 C.pl_y -= 1
                 C.pl_wallbreak -= 1
                 if C.pl_wallbreak == 0:
-                    item.item_effect_off()
+                    item.item_disable()
                 
     # キー入力：右方向
     if key[pygame.K_RIGHT] == True:
@@ -49,7 +49,7 @@ def move_player(key):
                 C.pl_x += 1
                 C.pl_wallbreak -= 1
                 if C.pl_wallbreak == 0:
-                    item.item_effect_off()
+                    item.item_disable()
                 
     # キー入力：下方向
     if key[pygame.K_DOWN] == True:
@@ -65,7 +65,7 @@ def move_player(key):
                 C.pl_y += 1
                 C.pl_wallbreak -= 1
                 if C.pl_wallbreak == 0:
-                    item.item_effect_off()
+                    item.item_disable()
                 
     # キー入力：左方向
     if key[pygame.K_LEFT] == True:
@@ -81,4 +81,4 @@ def move_player(key):
                 C.pl_x -= 1
                 C.pl_wallbreak -= 1
                 if C.pl_wallbreak == 0:
-                    item.item_effect_off()
+                    item.item_disable()

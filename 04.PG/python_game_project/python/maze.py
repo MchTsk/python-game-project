@@ -45,12 +45,14 @@ def make_maze():
     for y in range(1, C.maze_num-1):
         for x in range(1, C.maze_num-1):
             C.maze[y][x] = C.ROAD
+    # messagebox.askokcancel('maze', C.maze)
 
     # 【棒倒し方で迷路を作成】
     # 等間隔に壁を作る
     for y in range(2, C.maze_num-2, 2):
         for x in range(2, C.maze_num-2, 2):
             C.maze[y][x] = C.WALL
+    # messagebox.askokcancel('maze', C.maze)
     
     # 等間隔に作った壁の隣に、壁を作る
     for y in range(2, C.maze_num-2, 2):
@@ -59,3 +61,4 @@ def make_maze():
             if x > 2:
                 d = random.randint(0, 2)
             C.maze[y+YP[d]][x+XP[d]] = C.WALL
+    # messagebox.askokcancel('maze', C.maze)
