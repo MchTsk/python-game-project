@@ -1,0 +1,11 @@
+①pythonをインストール（導入済みの場合は不要）
+　・インストール元：https://www.python.org/
+　・手順参考：https://www.javadrive.jp/python/install/index1.html
+　※コマンドプロンプトにて、　python -m pip install --upgrade pip　でpythonを最新化
+
+②pygameをインストール（導入済みの場合は不要）
+　・コマンドプロンプトを起動し、下記を実行
+　　pip install pygame
+
+③下記をダブルクリック
+　\04.PG\python_game_project\Steet Biter.py

@@ -11,69 +11,69 @@ import logging
 from . import config as C
 
 
-# ******************** 指定のターゲットが存在するか探す ********************
-def search_target(target):
+# ******************** 指定のオブジェクトが存在するか探す ********************
+def search_object(dov):
 
-    # 指定のターゲットが存在するか
+    # 指定のオブジェクトが存在するか
     result = False
 
-    # 指定のターゲットを探す
-    for y in range(C.maze_num):
-        for x in range(C.maze_num):
-            if target == C.ITEM:
-                if math.ceil(C.maze[y][x]) == target:
+    # 指定のオブジェクトを探す
+    for y in range(C.block_num):
+        for x in range(C.block_num):
+            if dov == C.ITEM:
+                if math.ceil(C.field[y][x]) == dov:
                     result = True
             else:
-               if C.maze[y][x] == target:
+               if C.field[y][x] == dov:
                     result = True 
 
     return result
 
 
-# ******************** 指定のターゲットのx,y座標の取得 ********************
-def get_target_coordinate(target):
+# ******************** 指定のオブジェクトのX、Y軸座標の情報を取得 ********************
+def get_object_xy(dov):
 
-    # 指定のターゲットのx,y座標
-    target_x = 0
-    target_y = 0
+    # 指定のオブジェクトのx,y座標
+    dov_x = 0
+    dov_y = 0
 
-    # 指定のターゲットの座標を探す
-    for y in range(C.maze_num):
-        for x in range(C.maze_num):
-            if target == C.ITEM:
-                if math.ceil(C.maze[y][x]) == target:
-                    target_x = x
-                    target_y = y
+    # 指定のオブジェクトの座標を探す
+    for y in range(C.block_num):
+        for x in range(C.block_num):
+            if dov == C.ITEM:
+                if math.ceil(C.field[y][x]) == dov:
+                    dov_x = x
+                    dov_y = y
             else:
-                if C.maze[y][x] == target:
-                    target_x = x
-                    target_y = y
+                if C.field[y][x] == dov:
+                    dov_x = x
+                    dov_y = y
 
-    return target_x, target_y
+    return dov_x, dov_y
 
 
-# ******************** 目標をセット ********************
-def set_target(target):
+# ******************** オブジェクトセット ********************
+def set_object(dov):
     
     # 取得するx,y座標
     x = 0
     y = 0
     # プレイヤーから離す距離
-    dis = C.maze_num // 4
+    dis = C.block_num // 4
 
-    if target == C.ITEM:
+    if dov == C.ITEM:
         # アイテムの種類をランダムで決定
         rr_item = random.randrange(len(C.pl_item) - 1)
         # アイテム定義(負の数)-アイテム種類(小数1桁)（例：-3.1、-3.2...）
-        target = C.ITEM - ((rr_item + 1) / 10)
+        dov = C.ITEM - ((rr_item + 1) / 10)
     
     while True:
         # x,y座標 -> ランダム選択
-        x = random.randint(1, C.maze_num-2)
-        y = random.randint(1, C.maze_num-2)
-        # x,y座標 -> 通路 or コイン
-        if C.maze[y][x] == C.ROAD or C.maze[y][x] == C.COIN:
+        x = random.randint(1, C.block_num-2)
+        y = random.randint(1, C.block_num-2)
+        # x,y座標 -> 通路 or ポイント
+        if C.field[y][x] == C.ROAD or C.field[y][x] == C.POINT:
             # プレイヤーと離れている -> ok
             if (x < C.pl_x-dis or C.pl_x+dis < x) and (y < C.pl_y-dis or C.pl_y+dis < y):
-                C.maze[y][x] = target
+                C.field[y][x] = dov
                 break

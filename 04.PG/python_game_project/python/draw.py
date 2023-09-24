@@ -38,47 +38,48 @@ def draw_img(sc, img, x, y):
 
 
 # ******************** フィールドの描画 ********************
-def draw_maze(sc):
+def draw_field(sc):
     
     # プレイヤーを中心に、画面の端から端までの情報を取得し、画面描画する
     for y in range(C.sc_min, C.sc_max):
         for x in range(C.sc_min, C.sc_max):
-            X = (x + C.sc_x) * C.maze_size
-            Y = (y + C.sc_y) * C.maze_size
+            X = (x + C.sc_x) * C.block_size
+            Y = (y + C.sc_y) * C.block_size
             # プレイヤーが軸
             mx = C.pl_x + x
             my = C.pl_y + y
             
-            # 描画：壁と通路
-            if 0 <= mx < C.maze_num and 0 <= my < C.maze_num:
-                if C.maze[my][mx] == C.EDGE or C.maze[my][mx] == C.WALL: # 壁
+            if 0 <= mx < C.block_num and 0 <= my < C.block_num:
+                # 壁
+                if C.field[my][mx] == C.EDGE or C.field[my][mx] == C.WALL:
                     sc.blit(C.img_wall, [X, Y])
-                if C.maze[my][mx] == C.ROAD: # 通路
+                 # 通路
+                if C.field[my][mx] == C.ROAD:
                     sc.blit(C.img_road, [X, Y])
 
-                # 描画：ゴール
-                if C.maze[my][mx] == C.GOAL:
+                # ゴール
+                if C.field[my][mx] == C.GOAL:
                     sc.blit(C.img_goal, [X, Y])
-                # 描画：コイン
-                if C.maze[my][mx] == C.COIN:
-                    sc.blit(C.img_coin, [X, Y])
-                # 描画：アイテム（負の数のため、math.ceilで小数点以下を切り上げ）
-                if math.ceil(C.maze[my][mx]) == C.ITEM:
+                # ポイント
+                if C.field[my][mx] == C.POINT:
+                    sc.blit(C.img_point, [X, Y])
+                # アイテム（負の数のため、math.ceilで小数点以下を切り上げ）
+                if math.ceil(C.field[my][mx]) == C.ITEM:
                     # C.img_itemのリストから描画画像を設定
-                    sc.blit(C.img_item[I.get_item_num(C.maze[my][mx]) - 1], [X, Y])
-                # 描画：エネミー
+                    sc.blit(C.img_item[I.get_item_num(C.field[my][mx]) - 1], [X, Y])
+                # エネミー
                 for n in range(C.emy_max):
                     if C.emy_f[n] == False:
                         continue
                     if C.emy_x[n] == mx and C.emy_y[n] == my:
-                        # エネミーの種類番号＋向き先番号
-                        sc.blit(C.img_enemy[C.emy_col[n]*4 + C.emy_d[n]], [X, Y])
+                        # エネミーの種類番号
+                        sc.blit(C.img_enemy[C.emy_col[n]], [X, Y])
             
             # プレイヤーの口の動きの設定(FPSの設定に合わせる)
             if C.tmr%3 == 0:
                 C.plm_tmr += 1
                         
-            # 描画：プレイヤー
+            # プレイヤー
             if x == 0 and y == 0:
                 if C.pl_muteki%2 == 0:
                     img_rz = pygame.transform.rotozoom(C.img_player[C.pl_col*2+C.plm_tmr%2], C.pl_d*(-90), 1.0)
@@ -89,12 +90,12 @@ def draw_maze(sc):
                     else:
                         sc.blit(img_rz, [X, Y])
 
-    # 描画：視界エリア
+    # 視界制限
     if 21 <= C.course <= 25:
         if C.pl_fov == 0:
-            draw_img(sc, C.img_scope[C.pl_fov+1], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
+            draw_img(sc, C.img_fov[C.pl_fov+1], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
     elif C.course >= 26:
-        draw_img(sc, C.img_scope[C.pl_fov], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
+        draw_img(sc, C.img_fov[C.pl_fov], C.SCREEN_SIZE/1.2, C.SCREEN_SIZE/2)
 
     # 枠組み
     pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE-725, 40, 180, 240])
@@ -111,14 +112,14 @@ def draw_maze(sc):
         count_enemy_color[C.emy_col[n]] += 1
 
     # エネミーの情報
-    for i in range(6):
+    for i in range(len(C.img_enemy)):
         # 画像の描画
-        img_rz = pygame.transform.rotozoom(C.img_enemy[i*4], 0, 0.6)
+        img_rz = pygame.transform.rotozoom(C.img_enemy[i], 0, 0.6)
         sc.blit(img_rz, [C.SCREEN_SIZE-685, 50+37*i])
         # 文字の描画
         draw_text(sc, "X   " + str(count_enemy_color[i]), C.SCREEN_SIZE-635, 60+37*i, 30, C.BLACK, False)
 
-    # パックマン(効果)の情報
+    # 所持アイテムの情報
     for i in range(1, 6):
         if C.course > i*5:
             # 画像の描画
@@ -134,15 +135,15 @@ def draw_maze(sc):
             draw_text(sc, "[?]:", C.SCREEN_SIZE-705, 275+42*i, 30, C.BLACK, False)
             draw_text(sc, "X  " + str(C.pl_item[i]), C.SCREEN_SIZE-605, 275+42*i, 30, C.BLACK, False)
     
-    # COIN：獲得コイン数 / ライフ増加のための必要コイン数
+    # COIN：獲得ポイント数 / ライフ増加のための必要ポイント数
     if C.course <= 5:
-        str_pll_inc_coin = str(C.pll_inc_coin_1)
+        str_pll_inc_point = str(C.pll_inc_point_1)
     elif 6 <= C.course <= 10:
-        str_pll_inc_coin = str(C.pll_inc_coin_2)
+        str_pll_inc_point = str(C.pll_inc_point_2)
     elif 11 <= C.course <= 20:
-        str_pll_inc_coin = str(C.pll_inc_coin_3)
+        str_pll_inc_point = str(C.pll_inc_point_3)
     elif C.course >= 21:
-        str_pll_inc_coin = str(C.pll_inc_coin_4)
+        str_pll_inc_point = str(C.pll_inc_point_4)
 
     # TIME：１コースでかかっている時間
     tmr_sec = math.floor(C.tmr / C.FPS)
@@ -171,7 +172,7 @@ def draw_maze(sc):
     draw_text(sc, "TIME   :  ", C.SCREEN_SIZE-715, 625, 30, C.BLACK, False)
     draw_text(sc, str(time_limit - tmr_now)[2:], C.SCREEN_SIZE-630, 625, 30, wk_color, False)
     draw_text(sc, "LIFE    :  " + str(C.pl_life), C.SCREEN_SIZE-715, 660, 30, C.BLACK, False)
-    draw_text(sc, "POINT :  " + str(C.pl_coin) + " / " + str_pll_inc_coin, C.SCREEN_SIZE-715, 695, 30, C.BLACK, False)
+    draw_text(sc, "POINT :  " + str(C.pl_point) + " / " + str_pll_inc_point, C.SCREEN_SIZE-715, 695, 30, C.BLACK, False)
 
     if C.tmr % C.FPS <= 10:
         draw_text(sc, "[ESCAPE] TO MANUAL", (C.SCREEN_SIZE+500)/15, C.SCREEN_SIZE/35, 20, C.BLACK, True)

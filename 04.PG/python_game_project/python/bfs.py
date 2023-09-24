@@ -16,22 +16,22 @@ def init_dist():
 
     # distの初期化
     C.dist = []
-    for y in range(C.maze_num):
-        C.dist.append([0]*C.maze_num)
+    for y in range(C.block_num):
+        C.dist.append([0]*C.block_num)
 
     
-# ******************** 幅優先探索法より、目的地のルートをマッピングするために使用(C.mazeのコピー) ********************
+# ******************** 幅優先探索法より、目的地のルートをマッピングするために使用(C.fieldのコピー) ********************
 def set_dist():
 
     # distの初期化
     init_dist()
 
-    # 迷路をコピー(WALL or ROADのみ)
-    for y in range(C.maze_num):
-        for x in range(C.maze_num):
-            if C.maze[y][x] == C.EDGE:
+    # フィールドをコピー(WALL or ROADのみ)
+    for y in range(C.block_num):
+        for x in range(C.block_num):
+            if C.field[y][x] == C.EDGE:
                 C.dist[y][x] = C.EDGE
-            elif C.maze[y][x] == C.WALL:
+            elif C.field[y][x] == C.WALL:
                 C.dist[y][x] = C.WALL
             else:
                 C.dist[y][x] = C.ROAD
@@ -40,7 +40,7 @@ def set_dist():
 # ******************** 幅優先探索法 ********************
 def BFS(start_x, start_y, end_x, end_y):
 
-    # 迷路のコピーを作成
+    # フィールドのコピーを作成
     set_dist()
 
     # ナンバリング用の数字（C.EDGE=1のため、初期は2に設定）
@@ -73,8 +73,8 @@ def BFS(start_x, start_y, end_x, end_y):
             nx = x + dx[di]
             ny = y + dy[di]
             
-            # 迷路の範囲外はとばす
-            if (nx<0 or nx>=C.maze_num or ny<0 or ny>=C.maze_num): continue
+            # フィールドの範囲外はとばす
+            if (nx<0 or nx>=C.block_num or ny<0 or ny>=C.block_num): continue
             # 壁とナンバリング済みのマスはとばす
             if (C.dist[ny][nx] >= C.WALL): continue
 
