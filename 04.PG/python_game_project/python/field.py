@@ -45,14 +45,12 @@ def make_field():
     for y in range(1, C.block_num-1):
         for x in range(1, C.block_num-1):
             C.field[y][x] = C.ROAD
-    # messagebox.askokcancel('field', C.field)
 
     # 【棒倒し方でフィールドを作成】
     # 等間隔に壁を作る
     for y in range(2, C.block_num-2, 2):
         for x in range(2, C.block_num-2, 2):
             C.field[y][x] = C.WALL
-    # messagebox.askokcancel('field', C.field)
     
     # 等間隔に作った壁の隣に、壁を作る
     for y in range(2, C.block_num-2, 2):
@@ -61,4 +59,3 @@ def make_field():
             if x > 2:
                 d = random.randint(0, 2)
             C.field[y+YP[d]][x+XP[d]] = C.WALL
-    # messagebox.askokcancel('field', C.field)

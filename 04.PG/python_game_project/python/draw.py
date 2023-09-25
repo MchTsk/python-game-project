@@ -73,7 +73,7 @@ def draw_field(sc):
                         continue
                     if C.emy_x[n] == mx and C.emy_y[n] == my:
                         # エネミーの種類番号
-                        sc.blit(C.img_enemy[C.emy_col[n]], [X, Y])
+                        sc.blit(C.img_enemy[C.emy_type[n]], [X, Y])
             
             # プレイヤーの口の動きの設定(FPSの設定に合わせる)
             if C.tmr%3 == 0:
@@ -103,13 +103,13 @@ def draw_field(sc):
     pygame.draw.rect(sc, C.WHITE, [C.SCREEN_SIZE-725, 570, 180, 160])
 
 
-    # 色別のエネミーの数
+    # 種類別のエネミーの数
     count_enemy_color = [0]*6
     for n in range(C.emy_max):
         if C.emy_f[n] == False:
             continue
-        # 色別にカウント
-        count_enemy_color[C.emy_col[n]] += 1
+        # 種類別にカウント
+        count_enemy_color[C.emy_type[n]] += 1
 
     # エネミーの情報
     for i in range(len(C.img_enemy)):
@@ -135,7 +135,7 @@ def draw_field(sc):
             draw_text(sc, "[?]:", C.SCREEN_SIZE-705, 275+42*i, 30, C.BLACK, False)
             draw_text(sc, "X  " + str(C.pl_item[i]), C.SCREEN_SIZE-605, 275+42*i, 30, C.BLACK, False)
     
-    # COIN：獲得ポイント数 / ライフ増加のための必要ポイント数
+    # POINT：獲得ポイント数 / ライフ増加のための必要ポイント数
     if C.course <= 5:
         str_pll_inc_point = str(C.pll_inc_point_1)
     elif 6 <= C.course <= 10:

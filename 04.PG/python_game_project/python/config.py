@@ -12,7 +12,7 @@ DIR_UP = 0      # 上方向
 DIR_RIGHT = 1   # 右方向
 DIR_DOWN = 2    # 下方向
 DIR_LEFT = 3    # 左方向
-# # =============== COLOR ===============
+# # =============== PLAYER COLOR ===============
 COLOR_BLACK = 0     # 黒色
 COLOR_RED = 1       # 赤色
 COLOR_BLUE = 2      # 青色
@@ -79,19 +79,25 @@ time_limit_21_25 = datetime.timedelta(minutes = 3)
 time_limit_26_29 = datetime.timedelta(minutes = 3)
 time_limit_30 = datetime.timedelta(minutes = 1.5)
 # # =============== ENEMY ===============
-emy_max = 0             # エネミーの最大数
-emy_no = 0              # エネミーの配列の添字
-emy_num_max = False     # エネミーが最大数いるか
-emy_time = 0            # エネミーを生成するまでの時間
-emy_f = [False]*emy_max # エネミーが存在するか
-emy_col = [0]*emy_max   # エネミーの色(タイプ)
-emy_x = [0]*emy_max     # X座標
-emy_y = [0]*emy_max     # Y座標
-emy_d = [0]*emy_max     # 移動方向
-emy_s = [0]*emy_max     # 移動スピード
-ENEMY_HIGH_SPEED = 3    # 移動スピードレベル
-ENEMY_NORMAL_SPEED = 4  # 移動スピードレベル
-ENEMY_LOW_SPEED = 6     # 移動スピードレベル
+ENEMY_A = 0                 # ハイスピードエネミー
+ENEMY_B = 1                 # ノーマルエネミー
+ENEMY_C = 2                 # ロウスピードエネミー
+ENEMY_D = 3                 # ポイントバイトエネミー
+ENEMY_E = 4                 # ゴールブレイクエネミー
+ENEMY_F = 5                 # アイテムデリートエネミー
+emy_max = 0                 # エネミーの最大数
+emy_no = 0                  # エネミーの配列の添字
+emy_num_max = False         # エネミーが最大数いるか
+emy_time = 0                # エネミーを生成するまでの時間
+emy_f = [False]*emy_max     # エネミーが存在するか
+emy_type = [0]*emy_max      # エネミーの種類(タイプ)
+emy_x = [0]*emy_max         # X座標
+emy_y = [0]*emy_max         # Y座標
+emy_d = [0]*emy_max         # 移動方向
+emy_s = [0]*emy_max         # 移動スピード
+ENEMY_HIGH_SPEED = 3        # 移動スピードレベル
+ENEMY_NORMAL_SPEED = 4      # 移動スピードレベル
+ENEMY_LOW_SPEED = 6         # 移動スピードレベル
 # # =============== BFS ===============
 que = deque()
 dist = []

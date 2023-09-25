@@ -17,12 +17,12 @@ from . import config as C
 def init_enemy():
     
     C.emy_f = [False]*C.emy_max
-    C.emy_col = [0]*C.emy_max
+    C.emy_type = [0]*C.emy_max
     C.emy_x = [0]*C.emy_max
     C.emy_y = [0]*C.emy_max
     C.emy_d = [0]*C.emy_max
     C.emy_s = [0]*C.emy_max
-        
+
 
 # ******************** エネミーを出す ********************
 def bring_enemy():
@@ -37,29 +37,28 @@ def bring_enemy():
             if (emy_x < C.pl_x-5 or C.pl_x+5 < emy_x) and (emy_y < C.pl_y-5 or C.pl_y+5 < emy_y):
                 break
 
-    # エネミーの色：ランダム選択
-    emy_col = random.randint(C.COLOR_BLACK, C.COLOR_ORANGE)
+    # エネミーの種類：ランダム選択
+    emy_type = random.randint(C.ENEMY_A, C.ENEMY_F)
 
-    # エネミーの移動スピード(色で判別)
-    if emy_col == C.COLOR_BLACK:      # 黒
+    # エネミーの移動スピード
+    if emy_type == C.ENEMY_A:      # ハイスピード
         emy_s = C.ENEMY_HIGH_SPEED
-    elif emy_col == C.COLOR_RED:      # 赤
+    elif emy_type == C.ENEMY_B:      # ノーマル
         emy_s = C.ENEMY_NORMAL_SPEED
-    else:                           # 青、黄、緑、橙
+    else:                           # ロウスピード、ポイントバイト、ゴールブレイク、アイテムデリート
         emy_s = C.ENEMY_LOW_SPEED
 
     # エネミーを配置
-    set_enemy(emy_x, emy_y, emy_s, emy_col)
+    set_enemy(emy_x, emy_y, emy_s, emy_type)
 
 
 # ******************** エネミーをセット ********************
-def set_enemy(x, y, s, col):
+def set_enemy(x, y, s, type):
 
     while True:
-        # messagebox.askokcancel('test', C.emy_no)
         if C.emy_f[C.emy_no] == False:
             C.emy_f[C.emy_no] = True
-            C.emy_col[C.emy_no] = col
+            C.emy_type[C.emy_no] = type
             C.emy_x[C.emy_no] = x
             C.emy_y[C.emy_no] = y
             C.emy_s[C.emy_no] = s
@@ -81,8 +80,8 @@ def move_enemy():
         
         emy_dir = -1
 
-        # エネミーの色：黒 -> 移動方向：プレイヤーのいる方向 or ランダム
-        if C.emy_col[n] == C.COLOR_BLACK:
+        # ハイスピードエネミー -> 移動方向：プレイヤーのいる方向 or ランダム
+        if C.emy_type[n] == C.ENEMY_A:
             # 移動方向：プレイヤーの方向
             if C.emy_y[n] > C.pl_y:
                 emy_dir = C.DIR_UP    # 上方向
@@ -109,15 +108,15 @@ def move_enemy():
                     if move_ok == True:
                         break
 
-        # エネミーの色：青、赤、黄、緑、橙 -> 移動方向：目標へ移動(追尾)
+        # ノーマル、ロウスピード、ポイントバイト、ゴールブレイク、アイテムデリート -> 移動方向：目標へ移動(追尾)
         else:
-            # 青、赤：プレイヤーを追尾
-            if C.emy_col[n] == C.COLOR_BLUE or C.emy_col[n] == C.COLOR_RED:
+            # ノーマル、ロウスピード：プレイヤーを追尾
+            if C.emy_type[n] == C.ENEMY_B or C.emy_type[n] == C.ENEMY_C:
                 bfs.BFS(C.emy_x[n], C.emy_y[n], C.pl_x, C.pl_y)                         # 幅優先探索法でプレイヤーの位置までの最短ルートを算出
                 next_dir = bfs.next_direction(C.emy_x[n], C.emy_y[n], C.pl_x, C.pl_y)   # 幅優先探索法で求めたルートから次の移動方向を取得
                 
-            # 黄：ゴールへ移動 or プレイヤーを追尾
-            elif C.emy_col[n] == C.COLOR_YELLOW:
+            # ゴールブレイク：ゴールへ移動 or プレイヤーを追尾
+            elif C.emy_type[n] == C.ENEMY_E:
                 # ゴールが存在する：ゴールへ移動
                 if sgs.search_object(C.GOAL) == True:
                     goal_x, goal_y = sgs.get_object_xy(C.GOAL)                              # ゴールのx,y座標を取得
@@ -128,8 +127,8 @@ def move_enemy():
                     bfs.BFS(C.emy_x[n], C.emy_y[n], C.pl_x, C.pl_y)                         # 幅優先探索法でプレイヤーの位置までの最短ルートを算出
                     next_dir = bfs.next_direction(C.emy_x[n], C.emy_y[n], C.pl_x, C.pl_y)   # 幅優先探索法で求めたルートから次の移動方向を取得
 
-            # 緑：ポイントへ移動 or プレイヤーを追尾（フィールド上の全ポイントがなくなり次第追従）
-            elif C.emy_col[n] == C.COLOR_GREEN:
+            # ポイントバイト：ポイントへ移動 or プレイヤーを追尾（フィールド上の全ポイントがなくなり次第追従）
+            elif C.emy_type[n] == C.ENEMY_D:
                 # ポイントが存在する：ポイントへ移動
                 if sgs.search_object(C.POINT) == True:
                     point_x, point_y = sgs.get_object_xy(C.POINT)                             # ポイントのx,y座標を取得
@@ -140,8 +139,8 @@ def move_enemy():
                     bfs.BFS(C.emy_x[n], C.emy_y[n], C.pl_x, C.pl_y)                         # 幅優先探索法でプレイヤーの位置までの最短ルートを算出
                     next_dir = bfs.next_direction(C.emy_x[n], C.emy_y[n], C.pl_x, C.pl_y)   # 幅優先探索法で求めたルートから次の移動方向を取得
             
-            # 橙：アイテムへ移動 or プレイヤーを追尾
-            elif C.emy_col[n] == C.COLOR_ORANGE:
+            # アイテムデリート：アイテムへ移動 or プレイヤーを追尾
+            elif C.emy_type[n] == C.ENEMY_F:
                 # アイテムが存在する：アイテムへ移動
                 if sgs.search_object(C.ITEM) == True:
                     item_x, item_y = sgs.get_object_xy(C.ITEM)                              # アイテムのx,y座標を取得

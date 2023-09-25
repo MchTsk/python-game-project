@@ -146,18 +146,18 @@ def hit_object():
                     C.emy_f[n] = False
 
         # ゴールブレイクエネミー
-        if C.emy_col[n] == C.COLOR_YELLOW and C.field[C.emy_y[n]][C.emy_x[n]] == C.GOAL:
+        if C.emy_type[n] == C.ENEMY_E and C.field[C.emy_y[n]][C.emy_x[n]] == C.GOAL:
             C.field[C.emy_y[n]][C.emy_x[n]] = C.ROAD     # ゴールをなくす
             C.goal_f = False                      # ゴールがないフラグ
             C.goal_generate_time = C.FPS * 5       # ゴールを再生成するまでの時間
             C.se_break_goal.play()
 
         # ポイントバイトエネミー
-        if C.emy_col[n] == C.COLOR_GREEN  and C.field[C.emy_y[n]][C.emy_x[n]] == C.POINT:
+        if C.emy_type[n] == C.ENEMY_D and C.field[C.emy_y[n]][C.emy_x[n]] == C.POINT:
             C.field[C.emy_y[n]][C.emy_x[n]] = C.ROAD     # ポイントをなくす
 
         # アイテムデリートエネミー（負の数のため、math.ceilで小数点以下を切り上げ）
-        if C.emy_col[n] == C.COLOR_ORANGE and math.ceil(C.field[C.emy_y[n]][C.emy_x[n]]) == C.ITEM:
+        if C.emy_type[n] == C.ENEMY_F and math.ceil(C.field[C.emy_y[n]][C.emy_x[n]]) == C.ITEM:
             C.field[C.emy_y[n]][C.emy_x[n]] = C.ROAD     # アイテムをなくす
             C.se_delete_item.play()
 
